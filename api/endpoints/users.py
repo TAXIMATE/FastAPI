@@ -1,6 +1,16 @@
 from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Optional, List
+from fastapi.middleware.cors import CORSMiddleware
+
+# CORS 미들웨어 추가
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # 허용할 출처들
+    allow_credentials=True,
+    allow_methods=["*"],  # 허용할 HTTP 메소드들
+    allow_headers=["*"],  # 허용할 헤더들
+)
 
 router = APIRouter()
 
