@@ -1,14 +1,14 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, FastAPI
 from pydantic import BaseModel
 from typing import Optional, List
 from fastapi.middleware.cors import CORSMiddleware
 
 
-
+app = FastAPI()
 router = APIRouter()
 
 # CORS 미들웨어 추가
-router.add_middleware(
+app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # 허용할 출처들
     allow_credentials=True,
@@ -44,3 +44,5 @@ async def get_tm_list(station: str):
 @router.post("/")
 async def post_auth_code(code: AuthCode):
     return {"auth_code": code.auth_code}
+
+app.include_router(router)
