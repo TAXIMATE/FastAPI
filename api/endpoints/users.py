@@ -1,20 +1,12 @@
-from fastapi import APIRouter, HTTPException, FastAPI
+from fastapi import APIRouter, HTTPException
 from pydantic import BaseModel
 from typing import Optional, List
-from fastapi.middleware.cors import CORSMiddleware
+# import requests
+import json
+# from sqlalchemy.orm import Session
+# from db import crud, database, models
 
-
-app = FastAPI()
 router = APIRouter()
-
-# CORS 미들웨어 추가
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # 허용할 출처들
-    allow_credentials=True,
-    allow_methods=["*"],  # 허용할 HTTP 메소드들
-    allow_headers=["*"],  # 허용할 헤더들
-)
 
 class TMList(BaseModel):
     start_station: str
@@ -22,27 +14,30 @@ class TMList(BaseModel):
     desired_departure: str
     current_members: int
 
-class UserInfo(BaseModel):
-    name: str
-    age: int
-
-class Location(BaseModel):
-    latitude: float
-    longitude: float
-
-class AuthCode(BaseModel):
+class KakaoAuthCode(BaseModel):
     auth_code: str
 
-@router.get("/location/{user_id}")
-async def get_location(user_id: int):
-    return {"message": f"Get request for user location {user_id}"}
+class KakaoUserInfo(BaseModel):
+    nickname: str
+    profile_image: str
+
+
+# Dummy DB
+user_db = {}
 
 @router.get("/tm_list/{station}")
 async def get_tm_list(station: str):
-    return {"message": f"Get request for tm list for station {station}"}
+    # db: Session = Depends(get_db)
+    # tm_list = crud.get_tm_list_by_station(db, station=station)
+    # return tm_list
+    return TMList
 
-@router.post("/")
-async def post_auth_code(code: AuthCode):
-    return {"auth_code": code.auth_code}
+@router.post("/kakao_auth/")
+async def kakao_auth(code: KakaoAuthCode):
+    # Send POST request to Kakao login server
+    # Assuming the URL and the parameters needed
+   
 
-app.include_router(router)
+    # Send profile picture and nickname back to the client
+    return KakaoUserInfo(nickname=user_data["properties"]["nickname"], profile_image=user_data["properties"]["profile_image"])
+
