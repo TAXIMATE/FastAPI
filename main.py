@@ -37,14 +37,9 @@ async def get_tm_list(station: str):
     # return tm_list
     return TMList
 
-@app.post("/kakao_auth/")
+@app.post("/kakaoAuthCode/")
 async def kakao_auth(code: KakaoAuthCode):
-    # Send POST request to Kakao login server
-    # Assuming the URL and the parameters needed
-   
-
-    # Send profile picture and nickname back to the client
-    return KakaoUserInfo(nickname=user_data["properties"]["nickname"], profile_image=user_data["properties"]["profile_image"])
+    return {"auth_code": code.auth_code}
 
 @app.get("/team/{team_no}")
 async def get_team_info(team_no: int):
@@ -87,3 +82,6 @@ async def get_team_info(teamNo: int):
     # return team
     return {"message": f"Get request for team {teamNo}"}
 
+@app.get("/")
+def root():
+    return {'Hello' : 'World!'}
