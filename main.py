@@ -4,6 +4,14 @@ from pydantic import BaseModel
 from typing import Optional, List
 from fastapi.middleware.cors import CORSMiddleware
 
+from db import models  # db 폴더가 상대경로에 있으면 이렇게 임포트
+from db.crud import get_user, get_users, create_user, update_user, delete_user
+from db.crud import get_station, get_stations, create_station, update_station, delete_station
+from db.crud import get_tm, get_tms, create_tm, update_tm, delete_tm
+from db.crud import get_comment, get_comments, create_comment, update_comment, delete_comment
+from db.crud import get_temperature, get_temperatures, create_temperature, update_temperature, delete_temperature
+from db.database import SessionLocal, get_db
+
 app = FastAPI()
 
 origins = [
@@ -44,7 +52,7 @@ class Rating(BaseModel):
     team_no: int
     rating: float
 
-@app.get("/tm_list/{station}")
+@app.get("/tm_list/{station}", description="Read all tm_list of station relate to station")
 async def get_tm_list(station: str):
     # db: Session = Depends(get_db)
     # tm_list = crud.get_tm_list_by_station(db, station=station)
@@ -95,7 +103,3 @@ async def get_team_info(teamNo: int):
     #     raise HTTPException(status_code=404, detail="Team not found")
     # return team
     return {"message": f"Get request for team {teamNo}"}
-
-@app.get("/")
-def root():
-    return {'Hello' : 'World!'}
