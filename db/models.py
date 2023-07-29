@@ -34,6 +34,12 @@ class TM(Base):
     comment = Column(String)
     in_progress = Column(Boolean)
 
+    @property
+    def current_members(self):
+        members = [self.team_leader, self.member_1, self.member_2, self.member_3]
+        return len([member for member in members if member is not None])
+
+
 class Comment(Base):
     __tablename__ = "comments"
 

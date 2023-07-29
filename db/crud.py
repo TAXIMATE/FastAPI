@@ -1,6 +1,56 @@
 from sqlalchemy.orm import Session
 from db import models
 
+
+#1 Landing
+def get_all_tms(db: Session):
+    return db.query(models.TM).all()
+
+def get_tm_list_by_station(db: Session, station: str):
+    tm_objs = db.query(models.TM).filter(models.TM.start_station == station).all()
+    tm_list = []
+    for tm in tm_objs:
+        tm_list.append({
+            "start_station": tm.start_station,
+            "end_station": tm.end_station,
+            "desired_departure": tm.desired_departure,
+            "current_members": tm.current_members
+        })
+    return tm_list
+
+#2 Authentication
+
+
+#3 CRUD Team
+def get_team(db: Session, team_id: int):
+    return db.query(models.TM).filter(models.TM.id == team_id).first()
+
+def delete_team(db: Session, team_id: int):
+    db_team = get_team(db, team_id)
+    if db_team is None:
+        return None
+    db.delete(db_team)
+    db.commit()
+    return db_team
+
+def create_team(db: Session, team: TeamInfo):
+    db_team = models.TM(
+        start_station=team.start_station, 
+        end_station=team.end_station, 
+        desired_departure=team.start_time,
+        team_leader=team.member_info[0],
+        member_1=team.member_info[1] if len(team.member_info)>1 else None,
+        member_2=team.member_info[2] if len(team.member_info)>2 else None,
+        member_3=team.member_info[3] if len(team.member_info)>3 else None,
+        comment=team.comments,
+        in_progress=True
+    )
+    db.add(db_team)
+    db.commit()
+    db.refresh(db_team)
+    return db_team
+
+
 # For the User model
 def create_user(db: Session, user: models.User):
     db.add(user)
@@ -58,37 +108,6 @@ def delete_station(db: Session, station_id: int):
     db.delete(db_station)
     db.commit()
     return db_station
-
-
-# For the TM model
-def create_tm(db: Session, tm: models.TM):
-    db.add(tm)
-    db.commit()
-    db.refresh(tm)
-    return tm
-
-def get_tm(db: Session, tm_id: int):
-    return db.query(models.TM).filter(models.TM.id == tm_id).first()
-
-def get_all_tms(db: Session):
-    return db.query(models.TM).all()
-
-def update_tm(db: Session, tm: models.TM):
-    db_tm = get_tm(db, tm.id)
-    if db_tm is None:
-        return None
-    for var, value in vars(tm).items():
-        setattr(db_tm, var, value)
-    db.commit()
-    return db_tm
-
-def delete_tm(db: Session, tm_id: int):
-    db_tm = get_tm(db, tm_id)
-    if db_tm is None:
-        return None
-    db.delete(db_tm)
-    db.commit()
-    return db_tm
 
 # For the Comment model
 def create_comment(db: Session, comment: models.Comment):
