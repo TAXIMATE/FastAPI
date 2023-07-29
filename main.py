@@ -71,6 +71,8 @@ async def kakao_auth(code: KakaoAuthCode):
     return {"auth_code": code.auth_code}
 
 
+
+
 #3 CRUD Team
 @app.get("/team/{team_no}", response_model=TeamInfo, description="Get specific team info by team id")
 async def get_team_info(team_no: int, db: Session = Depends(get_db)):
