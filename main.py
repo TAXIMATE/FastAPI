@@ -7,7 +7,7 @@ from sqlalchemy.orm import Session
 from fastapi.responses import JSONResponse
 from fastapi_jwt_auth import AuthJWT
 from fastapi_jwt_auth.exceptions import AuthJWTException
-from db import models  # db 폴더가 상대경로에 있으면 이렇게 임포트
+from db import models  
 from db.crud import upsert_user, get_user
 from db.crud import get_team, create_team, delete_team
 from db.crud import get_all_tms, get_tm_list_by_station
@@ -91,7 +91,7 @@ def oauth_api(code: str, Authorize: AuthJWT = Depends()):
     auth_info = oauth.auth(code)
     user = oauth.userinfo("Bearer " + auth_info['access_token'])
     
-    user = User(user)
+    user = models.User(user)
     upsert_user(user)
 
     access_token = Authorize.create_access_token(subject=user.id)
