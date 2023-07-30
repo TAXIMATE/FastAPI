@@ -85,7 +85,7 @@ async def get_tm_list(station: str, db: Session = Depends(get_db)):
 #2 Authentication
 
 
-@app.get("/oauth")
+@app.get("/oauth", description="This API is used for oauth authorization. It gets the code as input, gets the user information, upserts the user, and creates and sets the access and refresh tokens.")
 def oauth_api(code: str, Authorize: AuthJWT = Depends()):
     oauth = Oauth()
     auth_info = oauth.auth(code)
@@ -101,35 +101,35 @@ def oauth_api(code: str, Authorize: AuthJWT = Depends()):
 
     return tokens
 
-@app.get("/token/refresh")
+@app.get("/token/refresh", description="This API is used to refresh the jwt access token. It requires a valid refresh token.")
 def refresh_token(Authorize: AuthJWT = Depends()):
     Authorize.jwt_refresh_token_required()
     current_user = Authorize.get_jwt_subject()
     new_access_token = Authorize.create_access_token(subject=current_user)
     return {"access_token": new_access_token}
 
-@app.get("/token/remove")
+@app.get("/token/remove", description="This API is used to remove jwt tokens. It unsets the jwt access and refresh cookies.")
 def remove_token(response: Response, Authorize: AuthJWT = Depends()):
     Authorize.unset_jwt_cookies(response)
     return {"message": "Successfully removed tokens"}
 
-@app.get("/userinfo")
+@app.get("/userinfo", description="This API is used to get user information. It requires a valid jwt token and it returns the information of the user related to the token.")
 def get_user_info(Authorize: AuthJWT = Depends()):
     Authorize.jwt_required()
     current_user = Authorize.get_jwt_subject()
     user_info = get_user(current_user).serialize()
     return user_info
 
-@app.get("/oauth/url")
+@app.get("/oauth/url", description="This API is used to get the URL for the Kakao oauth service.")
 def get_oauth_url():
     return JSONResponse(content={"kakao_oauth_url": "https://kauth.kakao.com/oauth/authorize?client_id=%s&redirect_uri=%s&response_type=code" % (CLIENT_ID, REDIRECT_URI)})
 
-@app.post("/oauth/refresh")
+@app.post("/oauth/refresh", description="This API is used to refresh the oauth access token. It gets the refresh token as input and returns a new access token and refresh token.")
 def refresh_oauth(refresh_token: RefreshToken):
     result = Oauth().refresh(refresh_token.refresh_token)
     return result
 
-@app.post("/oauth/userinfo")
+@app.post("/oauth/userinfo", description="This API is used to get user information from the Kakao oauth service. It requires a valid oauth access token and it returns the information of the user related to the token.")
 def get_oauth_userinfo(user: User):
     result = Oauth().userinfo("Bearer " + user.access_token)
     return result
