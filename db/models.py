@@ -32,13 +32,6 @@ class TM(Base):
         members = [self.team_leader, self.member_1, self.member_2, self.member_3]
         return len([member for member in members if member is not None])
 
-class TeamInfo(Base):
-    start_station: str
-    end_station: str
-    start_time: str
-    member_info: List[str]
-    comments: Optional[str] = None
-
 
 class Comment(Base):
     __tablename__ = "comments"
