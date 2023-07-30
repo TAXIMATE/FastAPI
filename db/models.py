@@ -10,15 +10,8 @@ class User(Base):
 
     id = Column(Integer, primary_key=True, index=True)
     nickname = Column(String, unique=True, index=True)
-    profile_picture = Column(String)
-    gender = Column(Boolean)
-
-class Station(Base):
-    __tablename__ = "stations"
-
-    id = Column(Integer, primary_key=True, index=True)
-    stations = Column(String)
-    # 추가 필요한 역에 대한 속성들
+    profile = Column(String, unique=True, index=True)
+    thumbnail = Column(String)
 
 class TM(Base):
     __tablename__ = "tms"
@@ -38,6 +31,13 @@ class TM(Base):
     def current_members(self):
         members = [self.team_leader, self.member_1, self.member_2, self.member_3]
         return len([member for member in members if member is not None])
+
+class TeamInfo(Base):
+    start_station: str
+    end_station: str
+    start_time: str
+    member_info: List[str]
+    comments: Optional[str] = None
 
 
 class Comment(Base):

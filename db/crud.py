@@ -19,7 +19,27 @@ def get_tm_list_by_station(db: Session, station: str):
     return tm_list
 
 #2 Authentication
+def get_user(db: Session, user_id: int):
+    return db.query(models.User).filter(models.User.id == user_id).first()
 
+
+def create_user(db: Session, user: dict):
+    db_user = models.User(**user)
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
+
+
+def update_user(db: Session, user: dict):
+    db_user = get_user(db, user['id'])
+    if db_user is None:
+        return create_user(db, user)
+    for key, value in user.items():
+        setattr(db_user, key, value)
+    db.commit()
+    db.refresh(db_user)
+    return db_user
 
 #3 CRUD Team
 def get_team(db: Session, team_id: int):
