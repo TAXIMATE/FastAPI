@@ -162,3 +162,7 @@ async def post_rating(rating: Rating):
     # 평점을 저장하는 코드를 여기에 작성합니다.
     # create_rating(db, rating=rating)
     return {"message": "Post request received", "rating": rating}
+
+@app.get("/")
+async def home():
+    return {"hello":"world"}
