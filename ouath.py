@@ -1,8 +1,8 @@
 import requests
 
-CLIENT_ID = "3b652ef3241c1172f4a318d72efc5f1f"
-CLIENT_SECRET = "I8DKo10BqOLwCfThjfqNNV7pH4tiYSin"
-REDIRECT_URI = "http://localhost:8000/oauth"
+CLIENT_ID = "d679f25e59dbc97619baf1256489b449"
+CLIENT_SECRET = "cs1JZxwlS4dr8gw3oewxYKFyEskRbdOJ"
+REDIRECT_URI = "http://localhost:3000"
 
 class Oauth:
     
