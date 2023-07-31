@@ -133,7 +133,21 @@ def get_kakao_token(code):
         "code": code,
     }
     response = requests.post(url, data=payload)
-    return response.json()  # returns a dictionary containing access token
+    return response.json().data.access_token
+
+@app.get("/kakao/user_info")
+def get_kakao_user_info(access_token: str):
+    url = "https://kapi.kakao.com/v2/user/me"
+    headers = {
+        "Authorization": f"Bearer {access_token}"
+    }
+
+    response = requests.get(url, headers=headers)
+
+    if response.status_code != 200:
+        raise HTTPException(status_code=400, detail="Could not retrieve user information")
+
+    return response.json()  # returns user information as a dictionary
 
 
 @app.get(
