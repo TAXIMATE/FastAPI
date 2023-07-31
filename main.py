@@ -11,7 +11,6 @@ from db import models
 from db.crud import upsert_user, get_user
 from db.crud import get_team, create_team, delete_team
 from db.crud import get_all_tms, get_tm_list_by_station
-from db.crud import create_station, get_station, update_station, delete_station
 from db.crud import create_comment, get_comment, get_all_comments, update_comment, delete_comment
 from db.crud import create_temperature, get_temperature, get_all_temperatures, update_temperature, delete_temperature
 from db.database import SessionLocal, get_db
