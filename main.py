@@ -22,6 +22,8 @@ app = FastAPI()
 
 origins = [
     "http://localhost:3000",
+    "https://kauth.kakao.com",
+    "https://kapi.kakao.com"
 ]
 
 app.add_middleware(
