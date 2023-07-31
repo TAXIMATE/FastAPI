@@ -122,20 +122,6 @@ def oauth_api(code: str, Authorize: AuthJWT = Depends()):
 
     return tokens
 
-
-@app.get("/kakao")
-def get_kakao_token(code):
-    url = "https://kauth.kakao.com/oauth/token"
-    payload = {
-        "grant_type": "authorization_code",
-        "client_id": "d679f25e59dbc97619baf1256489b449",
-        "redirect_uri": "http://localhost:3000",
-        "code": code,
-    }
-    response = requests.post(url, data=payload)
-    return response.json().data.access_token
-
-@app.get("/kakao/user_info")
 def get_kakao_user_info(access_token: str):
     url = "https://kapi.kakao.com/v2/user/me"
     headers = {
@@ -148,6 +134,24 @@ def get_kakao_user_info(access_token: str):
         raise HTTPException(status_code=400, detail="Could not retrieve user information")
 
     return response.json()  # returns user information as a dictionary
+
+@app.get("/kakao")
+def get_kakao_token(code):
+    url = "https://kauth.kakao.com/oauth/token"
+    payload = {
+        "grant_type": "authorization_code",
+        "client_id": "d679f25e59dbc97619baf1256489b449",
+        "redirect_uri": "http://localhost:3000",
+        "code": code,
+    }
+    response = requests.post(url, data=payload)
+    access_token = response.json().get('access_token', None)
+    
+    if access_token is None:
+        raise HTTPException(status_code=400, detail="Could not retrieve access token")
+    
+    return get_kakao_user_info(access_token)
+
 
 
 @app.get(
