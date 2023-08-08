@@ -69,6 +69,8 @@ class User(BaseModel):
 
 
 # 1 Landing Page
+from typing import List
+
 @app.get(
     "/tm_list/{station}",
     response_model=List[TMList],
@@ -82,7 +84,12 @@ async def get_tm_list(station: str, db: Session = Depends(get_db)):
     if not tm_list:
         raise HTTPException(status_code=404, detail="No TMList found for this station")
 
+    # Convert datetime objects to ISO format strings
+    for tm in tm_list:
+        tm.desired_departure = tm.desired_departure.isoformat() if tm.desired_departure else None
+
     return tm_list
+
 
 
 # 2 Authentication
