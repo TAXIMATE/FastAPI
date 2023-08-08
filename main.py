@@ -65,17 +65,7 @@ class User(BaseModel):
     access_token: str
 
 
-class RefreshToken(BaseModel):
-    refresh_token: str
 
-
-class Settings(BaseModel):
-    authjwt_secret_key: str = "I'M IML."
-    authjwt_token_location: str = "cookies"
-    authjwt_cookie_secure: bool = False
-    authjwt_cookie_csrf_protect: bool = True
-    authjwt_access_token_expires: int = 30
-    authjwt_refresh_token_expires: int = 100
 
 
 # 1 Landing Page
