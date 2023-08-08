@@ -84,11 +84,12 @@ async def get_tm_list(station: str, db: Session = Depends(get_db)):
     if not tm_list:
         raise HTTPException(status_code=404, detail="No TMList found for this station")
 
-    # Convert datetime objects to ISO format strings
+    # Convert datetime objects to ISO format strings for dictionaries
     for tm in tm_list:
-        tm.desired_departure = tm.desired_departure.isoformat() if tm.desired_departure else None
+        tm["desired_departure"] = tm["desired_departure"].isoformat() if tm["desired_departure"] else None
 
     return tm_list
+
 
 
 
