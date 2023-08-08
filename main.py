@@ -255,4 +255,4 @@ async def post_rating(rating: Rating):
 
 @app.get("/")
 async def home():
-    return {"hello": "world"}
+    return {"This is": "home"}
