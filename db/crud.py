@@ -4,55 +4,47 @@ from pydantic import schema
 
 
 # 1 Landing
-def get_all_tms(db: Session):
-    return db.query(models.TM).all()
+def get_tm_list_by_station(db: Session, station_name: str):
+    station = db.query(models.Station).filter(models.Station.name == station_name).first()
+    if not station:
+        return None  # No station found with that name
 
-
-def get_tm_list_by_station(db: Session, station: str):
-    tm_objs = db.query(models.TM).filter(models.TM.start_station == station).all()
     tm_list = []
-    for tm in tm_objs:
+    for team in station.teams:
         tm_list.append(
             {
-                "start_station": tm.start_station,
-                "end_station": tm.end_station,
-                "desired_departure": tm.desired_departure,
-                "current_members": tm.current_members,
+                "start_station": team.start_station.name,
+                "end_station": team.end_station.name,  # Similar relationship with end station
+                "desired_departure": team.desired_departure,
+                "current_members": team.current_members,
             }
         )
     return tm_list
 
 
 # 2 Authentication
-def get_user(db: Session, user_id: int):
-    return db.query(models.User).filter(models.User.id == user_id).first()
+def get_user_by_kakao_auth_id(db: Session, auth_id: str):
+    return db.query(models.User).filter(models.User.auth_id == auth_id).first()
 
-
-def create_user(db: Session, user: dict):
-    db_user = models.User(**user)
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    return db_user
-
-
-def update_user(db: Session, user: dict):
-    db_user = get_user(db, user["id"])
-    if db_user is None:
-        return create_user(db, user)
-    for key, value in user.items():
-        setattr(db_user, key, value)
-    db.commit()
-    db.refresh(db_user)
-    return db_user
-
-
-def upsert_user(db: Session, user: models.User):
-    db_user = get_user(db, user.id)
-    if db_user is None:
-        return create_user(db, user)
+def create_or_update_kakao_user(db: Session, user_info: dict):
+    user = get_user_by_kakao_auth_id(db, user_info['id'])
+    if user is None:
+        user = models.User(
+            nickname=user_info['properties']['nickname'],
+            profile=user_info['properties']['profile_image'],
+            thumbnail=user_info['properties']['thumbnail_image'],
+            auth_id=user_info['id']
+        )
+        db.add(user)
     else:
-        return update_user(db, user)
+        user.nickname = user_info['properties']['nickname']
+        user.profile = user_info['properties']['profile_image']
+        user.thumbnail = user_info['properties']['thumbnail_image']
+    
+    db.commit()
+    db.refresh(user)
+    return user
+
 
 
 # 3 CRUD Team

@@ -5,27 +5,34 @@ from sqlalchemy.sql.sqltypes import DateTime
 
 Base = declarative_base()
 
+#Authentication
 class User(Base):
     __tablename__ = "users"
     id = Column(Integer, primary_key=True, index=True)
     nickname = Column(String, unique=True, index=True)
     profile = Column(String, unique=True, index=True)
     thumbnail = Column(String)
+    auth_id = Column(String, unique=True)  # 카카오 사용자 고유 ID
 
+#current team list
 class Station(Base):
-    __tablename__ = "stations"
+    __tablename__ = 'station'
     id = Column(Integer, primary_key=True, index=True)
-    name = Column(String, unique=True, index=True)
+    name = Column(String, unique=True)
+
+    teams = relationship('Team', back_populates='start_station')
 
 class Team(Base):
-    __tablename__ = "teams"
+    __tablename__ = "team"
     id = Column(Integer, primary_key=True, index=True)
-    start_station = Column(String, index=True)
+    start_station_id = Column(Integer, ForeignKey('station.id'), nullable=False)
     end_station = Column(String, index=True)
     desired_departure = Column(DateTime)
     comment = Column(String)
     in_progress = Column(Boolean)
+    start_station = relationship('Station', back_populates='teams')
 
+#real time comment
 class Comment(Base):
     __tablename__ = "comments"
     id = Column(Integer, primary_key=True, index=True)
@@ -46,10 +53,3 @@ class Temperature(Base):
     team_id = Column(Integer, ForeignKey("teams.id"))
     temperature = Column(Integer)
 
-class UserAuth(Base):
-    __tablename__ = "user_auth"
-    id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    auth_provider = Column(String)
-    auth_id = Column(String)
-    auth_token = Column(String)
